@@ -1,5 +1,5 @@
 {
-  "name": "@frameio-community/n8n-node",
+  "name": "n8n-nodes-frameio-community",
   "version": "0.1.0",
   "description": "n8n community node for Frame.io API integration - video collaboration and asset management",
   "keywords": [

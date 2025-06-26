@@ -1,6 +1,6 @@
 # Frame.io n8n Community Node
 
-[![npm version](https://badge.fury.io/js/%40frameio-community%2Fn8n-node.svg)](https://badge.fury.io/js/%40frameio-community%2Fn8n-node)
+[![npm version](https://badge.fury.io/js/n8n-nodes-frameio-community.svg)](https://badge.fury.io/js/n8n-nodes-frameio-community)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A community node for [n8n](https://n8n.io/) that provides integration with Frame.io API for video collaboration and asset management.
@@ -11,7 +11,7 @@ A community node for [n8n](https://n8n.io/) that provides integration with Frame
 
 ### Method 1: Install from npm
 ```bash
-npm install @frameio-community/n8n-node
+npm install n8n-nodes-frameio-community
 ```
 
 ### Method 2: Install from GitHub
@@ -22,7 +22,7 @@ npm install https://github.com/frameio-community/n8n-frameio-node.git
 ### Method 3: Install in n8n Community Nodes
 1. Go to **Settings** → **Community Nodes**
 2. Click **"Install a community node"**
-3. Enter: `@frameio-community/n8n-node`
+3. Enter: `n8n-nodes-frameio-community`
 4. Click **Install**
 
 ## 📋 Features
