@@ -1,0 +1,5106 @@
+{
+	"info": {
+		"_postman_id": "cb28c1a9-c89d-4828-9b62-f6ebd845f52e",
+		"name": "Frame.io Developer API Collection",
+		"description": "## Authentication\n\nAuthentication happens using OAuth 2.0 via Adobe IMS. API access and client credentials are configured on / retrieved from the Adobe Developer Console. Authentication is done on the Authorization tab of the collection and every request inherits credentials from the parent folder.\n\nFollow our [get started guide](https://developer-stage.adobe.com/frameio/guides/#start-developing-with-postman) to configure this Postman collection for your usage.\n\n## Environment Variables\n\nAll path params and dynamic arguments are configured via environment variables. Please set the Frame V4 Developer API Default Environment in order to view and configure the envirornment variables referenced from this collection.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20469461"
+	},
+	"item": [
+		{
+			"name": "Stable",
+			"item": [
+				{
+					"name": "Accounts, Users & Permissions",
+					"item": [
+						{
+							"name": "Accounts",
+							"item": [
+								{
+									"name": "list accounts",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": "{{BASE_URL}}/v4/accounts"
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Users",
+							"item": [
+								{
+									"name": "user details",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"// Check if the response status is 200",
+													"pm.test(\"Status code is 200\", function () {",
+													"    pm.response.to.have.status(200);",
+													"});",
+													"",
+													"// Check if the response is in JSON format",
+													"pm.test(\"Response is JSON\", function () {",
+													"    pm.response.to.be.json;",
+													"});",
+													"",
+													"// Check if the account_user object has the expected properties",
+													"pm.test(\"account_user has expected properties\", function () {",
+													"    var jsonData = pm.response.json();",
+													"    pm.expect(jsonData.data).to.have.property('adobe_user_id');",
+													"    pm.expect(jsonData.data).to.have.property('id');",
+													"    pm.expect(jsonData.data).to.have.property('updated_at');",
+													"    pm.expect(jsonData.data).to.have.property('created_at');",
+													"    pm.expect(jsonData.data).to.have.property('account_id');",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": "{{BASE_URL}}/v4/me"
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Account Permissions",
+							"item": [
+								{
+									"name": "List user roles for account",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/users?page_size=50&include_total_count=true&include_deactivated=true",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "50"
+												},
+												{
+													"key": "include_total_count",
+													"value": "true"
+												},
+												{
+													"key": "include_deactivated",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Workspace Permissions",
+							"item": [
+								{
+									"name": "List user roles for workspace",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/users?page_size=5&include_total_count=true",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "5"
+												},
+												{
+													"key": "include_total_count",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update user role in a workspace",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"role\": \"full_access\" // Valid roles: [\"full_access\", \"editor\", \"edit_only\", \"commenter\", \"viewer\"]\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/users/:user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"users",
+												":user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												},
+												{
+													"key": "user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete user from a workspace",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/users/:target_user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"users",
+												":target_user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												},
+												{
+													"key": "target_user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Project Permissions",
+							"item": [
+								{
+									"name": "List user roles for project",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/users?page_size=5&include_total_count=true",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "5"
+												},
+												{
+													"key": "include_total_count",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update user role in a Project",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"role\": \"full_access\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/users/:user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"users",
+												":user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												},
+												{
+													"key": "user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete user from a project",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/users/:target_user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"users",
+												":target_user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												},
+												{
+													"key": "target_user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Workspace Management",
+					"item": [
+						{
+							"name": "Projects",
+							"item": [
+								{
+									"name": "list projects",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/projects?include=owner&page_size=10",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"projects"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "owner"
+												},
+												{
+													"key": "page_size",
+													"value": "10"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "create project",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"Super fun Project\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/projects",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"projects"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "update project",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"Project Name 256\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "delete project",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "show project",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id?include=owner",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "owner"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Workspaces",
+							"item": [
+								{
+									"name": "create workspace",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"data\": {\n    \"name\": \"Test workspace\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "show workspace",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id?include=creator",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "update workspace",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"data\": {\n    \"name\": \"Updated workspace name\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "list workspaces",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces?page_size=50",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator",
+													"disabled": true
+												},
+												{
+													"key": "page_size",
+													"value": "50"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "delete workspace",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"project\": {\n    \"description\": \"Test Project description\",\n    \"name\": \"Test Project\",\n    \"private\": true\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Shares",
+							"item": [
+								{
+									"name": "list shares",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/shares",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"shares"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "show share",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										},
+										"description": "Gets Share by ID"
+									},
+									"response": []
+								},
+								{
+									"name": "create share on an asset(s)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": " {\n    \"data\": {\n        \"type\": \"asset\",\n        \"name\": \"Test Share - preview\",\n        \"access\": \"public\",\n        \"description\": \"test description\",\n        \"expiration\": \"2026-02-02T21:19:24.828948Z\",\n        \"passphrase\": \"asdfasdf!1\"\n        // \"asset_ids\": [\"<sset_id>\"] // optional\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/shares",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"shares"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "update share on an asset",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"description\": \"updated description\", // optional\n        \"name\": \"Test Share - UPDATE!\", // optional\n        \"access\": \"restricted\", // optional\n        \"passphrase\": null, // optional for user, if required by account passphrase will be generated\n        \"expiration\": \"2027-02-02T21:19:24.828948Z\" // optional\n    }\n}\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete share",
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "add asset to share",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"asset_id\": \"eb23cc0b-849c-424a-b08d-9f4ecb4bd60a\"\n    }\n}\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/assets",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"assets"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "remove asset from share",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/assets/:asset_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"assets",
+												":asset_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												},
+												{
+													"key": "asset_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "list share reviewers (restricted only)",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/reviewers",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"reviewers"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "add reviewers to secure share",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"reviewers\": {\n        // NOTES: \n        // * Only one param identifier type supported per request.\n        // * `email` is the only param that can be used to add reviewers that do not already exist as an AccountUser on the Account the Share belongs to.\n\n        \"emails\": []\n        // \"adobe_user_ids\": []\n        // \"user_ids\": []\n    },\n    \"message\": \"Please join my share!\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/reviewers",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"reviewers"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "remove reviewers from share",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"reviewers\": {\n        // NOTES: \n        // * Only one param identifier type supported per request.\n\n        // \"adobe_user_ids\": []\n        // \"emails\": []\n        // \"user_ids\": []\n    }\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/reviewers",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"reviewers"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Assets",
+					"item": [
+						{
+							"name": "Files",
+							"item": [
+								{
+									"name": "create file - local upload",
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"small_test.jpg\",\n    \"file_size\": 1024\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/files/local_upload",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"files",
+												"local_upload"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "create file - remote upload",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"white-pixel\",\n    \"source_url\": \"https://upload.wikimedia.org/wikipedia/commons/e/e1/White_Pixel_1x1.jpg\"\n}\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/files/remote_upload",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"files",
+												"remote_upload"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "create file - direct upload (Deprecated)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"small_test.jpg\",\n    \"media_type\": \"image/jpg\",\n    \"file_size\": 1024\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/files",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"files"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL.\n\nNote that uploading data to the returned S3 URLs requires passing the x-amz-acl: private header with the PUT request."
+									},
+									"response": []
+								},
+								{
+									"name": "create file - remote upload (Deprecated)",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"white-pixel\",\n    \"source_url\": \"https://upload.wikimedia.org/wikipedia/commons/e/e1/White_Pixel_1x1.jpg\",\n    \"file_size\": 518,\n    \"media_type\": \"image/jpg\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/files",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"files"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "show file",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id?include=creator,project",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator,project"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "show file with media links",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id?include=project,media_links.original, media_links.thumbnail, media_links.video_h264_180,media_links.efficient,media_links.high_quality",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "project,media_links.original, media_links.thumbnail, media_links.video_h264_180,media_links.efficient,media_links.high_quality"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete file",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Folders",
+							"item": [
+								{
+									"name": "create folder",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \"data\": {\n    \"name\": \"Create Refactor\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/folders",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"folders"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{ROOT_ASSET_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL.\n\nNote that uploading data to the returned S3 URLs requires passing the x-amz-acl: private header with the PUT request."
+									},
+									"response": []
+								},
+								{
+									"name": "show folder",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id?include=creator,project",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator,project"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "update folder",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"Updated folder name - test\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "list folder children",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/children",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"children"
+											],
+											"query": [
+												{
+													"key": "type",
+													"value": "folder,file",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{ROOT_ASSET_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "delete folder",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Comments",
+					"item": [
+						{
+							"name": "show comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"rate limiting headers are present\", function () {",
+											"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+											"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+											"  pm.response.to.have.header(\"x-ratelimit-window\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "api-version",
+										"value": "4.0"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v4/accounts/:account_id/comments/:comment_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v4",
+										"accounts",
+										":account_id",
+										"comments",
+										":comment_id"
+									],
+									"variable": [
+										{
+											"key": "account_id",
+											"value": "{{ACCOUNT_ID}}"
+										},
+										{
+											"key": "comment_id",
+											"value": "{{COMMENT_ID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "list comments",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "api-version",
+										"value": "4.0"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id/comments",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v4",
+										"accounts",
+										":account_id",
+										"files",
+										":file_id",
+										"comments"
+									],
+									"query": [
+										{
+											"key": "include_total_count",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "page_size",
+											"value": "1",
+											"disabled": true
+										},
+										{
+											"key": "after",
+											"value": "g3QAAAACZAAGb2Zmc2V0YQFkAAR0eXBlZAANb2Zmc2V0X2N1cnNvcg==",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "account_id",
+											"value": "{{ACCOUNT_ID}}"
+										},
+										{
+											"key": "file_id",
+											"value": "{{ASSET_ID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"rate limiting headers are present\", function () {",
+											"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+											"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+											"  pm.response.to.have.header(\"x-ratelimit-window\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "api-version",
+										"value": "4.0"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"text\": \"132 Public Comment\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id/comments",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v4",
+										"accounts",
+										":account_id",
+										"files",
+										":file_id",
+										"comments"
+									],
+									"variable": [
+										{
+											"key": "account_id",
+											"value": "{{ACCOUNT_ID}}"
+										},
+										{
+											"key": "file_id",
+											"value": "{{ASSET_ID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update comment",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"rate limiting headers are present\", function () {",
+											"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+											"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+											"  pm.response.to.have.header(\"x-ratelimit-window\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "api-version",
+										"value": "4.0"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"data\": {\n        \"text\": \"1332 Comment Updated\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}/v4/accounts/:account_id/comments/:comment_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v4",
+										"accounts",
+										":account_id",
+										"comments",
+										":comment_id"
+									],
+									"variable": [
+										{
+											"key": "account_id",
+											"value": "{{ACCOUNT_ID}}"
+										},
+										{
+											"key": "comment_id",
+											"value": "{{COMMENT_ID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete comment",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "api-version",
+										"value": "4.0"
+									}
+								],
+								"url": {
+									"raw": "{{BASE_URL}}/v4/accounts/:account_id/comments/:comment_id",
+									"host": [
+										"{{BASE_URL}}"
+									],
+									"path": [
+										"v4",
+										"accounts",
+										":account_id",
+										"comments",
+										":comment_id"
+									],
+									"variable": [
+										{
+											"key": "account_id",
+											"value": "{{ACCOUNT_ID}}"
+										},
+										{
+											"key": "comment_id",
+											"value": "{{COMMENT_ID}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Integrations",
+					"item": [
+						{
+							"name": "Webhooks",
+							"item": [
+								{
+									"name": "create webhook",
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"New Webhook\",\n        \"events\": [\"file.created\"],\n        \"url\": \"https://www.example.com\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/webhooks",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"webhooks"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "list webhooks",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/webhooks",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"webhooks"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "show webhook",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/webhooks/:webhook_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"webhooks",
+												":webhook_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "webhook_id",
+													"value": "{{WEBHOOK_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete webhook",
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/webhooks/:webhook_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"webhooks",
+												":webhook_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "webhook_id",
+													"value": "{{WEBHOOK_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update webhook",
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "4.0"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"change\",\n        \"events\": [\n            \"file.updated\"\n        ],\n        \"url\": \"https://url.change.com\",\n        \"active\": false\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/webhooks/:webhook_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"webhooks",
+												":webhook_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "webhook_id",
+													"value": "{{WEBHOOK_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Experimental",
+			"item": [
+				{
+					"name": "Accounts, Users & Permissions",
+					"item": [
+						{
+							"name": "Account Permissions (Deprecated)",
+							"item": [
+								{
+									"name": "List user roles for account",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/users?page_size=50&include_total_count=true&include_deactivated=true",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "50"
+												},
+												{
+													"key": "include_total_count",
+													"value": "true"
+												},
+												{
+													"key": "include_deactivated",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Workspace Permissions (Deprecated)",
+							"item": [
+								{
+									"name": "List user roles for workspace",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/users?page_size=5&include_total_count=true",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "5"
+												},
+												{
+													"key": "include_total_count",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update user role in a workspace",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"role\": \"full_access\" // Valid roles: [\"full_access\", \"editor\", \"edit_only\", \"commenter\", \"viewer\"]\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/users/:user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"users",
+												":user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												},
+												{
+													"key": "user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete user from a workspace",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/users/:target_user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"users",
+												":target_user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												},
+												{
+													"key": "target_user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Project Permissions (Deprecated)",
+							"item": [
+								{
+									"name": "List user roles for project",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/users?page_size=5&include_total_count=true",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "5"
+												},
+												{
+													"key": "include_total_count",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Update user role in a Project",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"role\": \"full_access\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/users/:user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"users",
+												":user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												},
+												{
+													"key": "user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Delete user from a project",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/users/:target_user_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"users",
+												":target_user_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												},
+												{
+													"key": "target_user_id",
+													"value": "{{TARGET_USER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Workspace Management",
+					"item": [
+						{
+							"name": "Shares (Deprecated)",
+							"item": [
+								{
+									"name": "add reviewers to secure share",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"reviewers\": {\n        // NOTES: \n        // * Only one param identifier type supported per request.\n        // * `email` is the only param that can be used to add reviewers that do not already exist as an AccountUser on the Account the Share belongs to.\n\n        \"emails\": []\n        // \"adobe_user_ids\": []\n        // \"user_ids\": []\n    },\n    \"message\": \"Please join my share!\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/reviewers",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"reviewers"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete share",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "show share",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										},
+										"description": "Gets Share by ID"
+									},
+									"response": []
+								},
+								{
+									"name": "list share reviewers (restricted only)",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/reviewers",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"reviewers"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "remove reviewers from share",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"reviewers\": {\n        // NOTES: \n        // * Only one param identifier type supported per request.\n\n        // \"adobe_user_ids\": []\n        // \"emails\": []\n        // \"user_ids\": []\n    }\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/shares/:share_id/reviewers",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"shares",
+												":share_id",
+												"reviewers"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "share_id",
+													"value": "{{SHARE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Assets",
+					"item": [
+						{
+							"name": "Files",
+							"item": [
+								{
+									"name": "create file - local upload (Deprecated)",
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"small_test.jpg\",\n    \"file_size\": 1024\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/files/local_upload",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"files",
+												"local_upload"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "create file - remote upload (Deprecated)",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"white-pixel\",\n    \"source_url\": \"https://upload.wikimedia.org/wikipedia/commons/e/e1/White_Pixel_1x1.jpg\"\n}\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/files/remote_upload",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"files",
+												"remote_upload"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "show file upload status",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "experimental"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id/status",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id",
+												"status"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "show file with media links (Deprecated)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id?include=project,media_links.original, media_links.thumbnail, media_links.video_h264_180,media_links.efficient,media_links.high_quality",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "project,media_links.original, media_links.thumbnail, media_links.video_h264_180,media_links.efficient,media_links.high_quality"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "show file with metadata",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id?include=metadata",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "metadata"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update file",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \n\"data\": {\n    \"name\": \"new_file_name.jpg\"\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL.\n\nNote that uploading data to the returned S3 URLs requires passing the x-amz-acl: private header with the PUT request."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Folders",
+							"item": [
+								{
+									"name": "list folder children with metadata",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/children?include=metadata",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"children"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "metadata"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "list folder children with media links",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/children?include=project,media_links.original, media_links.thumbnail, media_links.video_h264_180",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"children"
+											],
+											"query": [
+												{
+													"key": "type",
+													"value": "folder,file",
+													"disabled": true
+												},
+												{
+													"key": "include",
+													"value": "project,media_links.original, media_links.thumbnail, media_links.video_h264_180"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Version Stacks",
+							"item": [
+								{
+									"name": "create version stack",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{ \"data\": {\n    // Minimum of two file ids, maximum of five, ordered from bottom (base) to top (head)\n    // Files must exist in the parent directory identified in the path\n    \"file_ids\": [\"c09972bd-be10-4f1f-8c28-0efd896dbf0e\", \"e0e21a3c-8449-484c-a8e2-44d4d2427572\"]\n  }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/folders/:folder_id/version_stacks",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"folders",
+												":folder_id",
+												"version_stacks"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator,project",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "folder_id",
+													"value": "{{FOLDER_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL.\n\nNote that uploading data to the returned S3 URLs requires passing the x-amz-acl: private header with the PUT request."
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Metadata",
+					"item": [
+						{
+							"name": "Metadata",
+							"item": [
+								{
+									"name": "Show metadata for asset",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/files/:file_id/metadata",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"files",
+												":file_id",
+												"metadata"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "file_id",
+													"value": "{{ASSET_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "List account field definitions",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/metadata/field_definitions?page_size=3&type=essentials",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"metadata",
+												"field_definitions"
+											],
+											"query": [
+												{
+													"key": "page_size",
+													"value": "3"
+												},
+												{
+													"key": "type",
+													"value": "essentials"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												}
+											]
+										},
+										"description": "Fetches a paginated list of field definitions for a given account."
+									},
+									"response": []
+								},
+								{
+									"name": "Create account level field definitions",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"field name toggle\",\n        \"field_type\": \"toggle\",\n        \"field_configuration\": {\n            \"color\": \"#ffd4d5\"\n        }\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/metadata/field_definitions",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"metadata",
+												"field_definitions"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "Update asset(s) metadata for project",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"rate limiting headers are present\", function () {",
+													"  pm.response.to.have.header(\"x-ratelimit-limit\");",
+													"  pm.response.to.have.header(\"x-ratelimit-remaining\");",
+													"  pm.response.to.have.header(\"x-ratelimit-window\");",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"asset_ids\": [\"e44698db-adb7-4990-836f-90aad8c15a9c\"],\n        \"values\": [\n            {\n                \"field_definition_id\": \"9d69e9ac-e857-4fe6-b584-8d1c88d23d39\",\n                \"value\": \"Updated Value\"\n            },\n            {\n                // field_type: date\n                \"field_definition_id\": \"786fa593-9ec4-4ef6-b488-f6be9f45fc06\",\n                \"value\": \"2023-10-12-234\"\n            }\n        ]\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/projects/:project_id/metadata/values",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"projects",
+												":project_id",
+												"metadata",
+												"values"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "project_id",
+													"value": "{{PROJECT_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Integrations",
+					"item": [
+						{
+							"name": "Webhooks (Deprecated)",
+							"item": [
+								{
+									"name": "create webhook",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"New Webhook\",\n        \"events\": [\"file.created\"],\n        \"url\": \"https://www.example.com\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/webhooks",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"webhooks"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "list webhooks",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/webhooks",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"webhooks"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "show webhook",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true,
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/webhooks/:webhook_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"webhooks",
+												":webhook_id"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator",
+													"disabled": true
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "webhook_id",
+													"value": "{{WEBHOOK_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete webhook",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/webhooks/:webhook_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"webhooks",
+												":webhook_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "webhook_id",
+													"value": "{{WEBHOOK_ID}}"
+												}
+											]
+										},
+										"description": "Gets S3 URLs for multipart upload into Project root.\n\nNote: for simplicity, example file / filesize will return only one URL."
+									},
+									"response": []
+								},
+								{
+									"name": "update webhook",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"followRedirects": true,
+										"disableUrlEncoding": false,
+										"disableCookies": false
+									},
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n        \"name\": \"change\",\n        \"events\": [\n            \"file.updated\"\n        ],\n        \"url\": \"https://url.change.com\",\n        \"active\": false\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/webhooks/:webhook_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"webhooks",
+												":webhook_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "webhook_id",
+													"value": "{{WEBHOOK_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Custom Actions",
+							"item": [
+								{
+									"name": "create custom action",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n          \"name\": \"First Custom Action\",\n          \"description\": \"customizing our workflow\",\n          \"url\": \"https://example.com/custom-action\",\n          \"event\": \"my.event\"\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/actions",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"actions"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete custom action",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/actions/:action_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"actions",
+												":action_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "action_id",
+													"value": "{{ACTION_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get custom action",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/actions/:action_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"actions",
+												":action_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "action_id",
+													"value": "{{ACTION_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "list custom actions",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/workspaces/:workspace_id/actions?include=creator",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"workspaces",
+												":workspace_id",
+												"actions"
+											],
+											"query": [
+												{
+													"key": "include",
+													"value": "creator"
+												}
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "workspace_id",
+													"value": "{{WORKSPACE_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "update custom action",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "api-version",
+												"value": "alpha"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"data\": {\n          \"name\": \"First Custom Action - updated\",\n          \"description\": \"customizing our workflow\",\n          \"url\": \"https://example.com/custom-action\",\n          \"event\": \"my.event\",\n          \"active\": true\n    }\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{BASE_URL}}/v4/accounts/:account_id/actions/:action_id",
+											"host": [
+												"{{BASE_URL}}"
+											],
+											"path": [
+												"v4",
+												"accounts",
+												":account_id",
+												"actions",
+												":action_id"
+											],
+											"variable": [
+												{
+													"key": "account_id",
+													"value": "{{ACCOUNT_ID}}"
+												},
+												{
+													"key": "action_id",
+													"value": "{{ACTION_ID}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": {
+			"grant_type": "authorization_code",
+			"client_authentication": "body",
+			"scope": "email openid profile AdobeID additional_info.roles offline_access",
+			"accessTokenUrl": "{{IMS_BASE_URL}}/ims/token/v3",
+			"authUrl": "{{IMS_BASE_URL}}/ims/authorize/v2",
+			"clientSecret": "{{IMS_CLIENT_SECRET}}",
+			"clientId": "{{IMS_CLIENT_ID}}",
+			"refreshRequestParams": [],
+			"tokenRequestParams": [],
+			"authRequestParams": [],
+			"headerPrefix": "Bearer",
+			"useBrowser": true,
+			"tokenName": "V4 Developer Platform",
+			"redirect_uri": "",
+			"addTokenTo": "header"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

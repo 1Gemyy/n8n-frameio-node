@@ -1,0 +1,58 @@
+{
+  "name": "Frame.io Node Example Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "4f0b4f74-8b1a-4c4a-9b6e-8f2a3d5c6e7f",
+      "name": "When clicking \"Test workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "account",
+        "operation": "getCurrentUser",
+        "accountId": ""
+      },
+      "id": "8a2b5c3d-4e5f-6789-abcd-ef0123456789",
+      "name": "Frame.io",
+      "type": "n8n-nodes-frameio.frameIo",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "frameIoApi": {
+          "id": "1",
+          "name": "Frame.io API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking \"Test workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Frame.io",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1.0.0",
+  "meta": {
+    "instanceId": "your-instance-id"
+  },
+  "id": "frameio-test-workflow",
+  "tags": []
+}

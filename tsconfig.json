@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2017",
+		"noImplicitAny": false,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"declaration": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strict": false,
+		"noUnusedLocals": true,
+		"skipLibCheck": true,
+		"typeRoots": ["./node_modules/@types"],
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "node",
+		"resolveJsonModule": true
+	},
+	"include": ["nodes/**/*", "credentials/**/*"],
+	"exclude": ["node_modules/**/*", "dist/**/*"]
+}
